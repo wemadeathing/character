@@ -105,8 +105,8 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
         ref={flatListRef}
         data={onboardingData}
         renderItem={renderItem}
-        horizontal
-        pagingEnabled
+        horizontal={true}
+        pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         onViewableItemsChanged={onViewableItemsChanged}
