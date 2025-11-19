@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeStack from './HomeStack';
+import AuthStack from './AuthStack';
 import ComponentShowcaseScreen from '../screens/ComponentShowcaseScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
@@ -46,6 +47,16 @@ export default function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Auth"
+        component={AuthStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="lock-closed-outline" size={size} color={color} />
           ),
         }}
       />
