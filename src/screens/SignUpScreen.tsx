@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../navigation/AuthStack';
 import { Input, Button, Card } from '../components';
 import Theme from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
 
 type SignUpScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'SignUp'>;
 
@@ -14,6 +15,7 @@ interface SignUpScreenProps {
 }
 
 export default function SignUpScreen({ navigation, onSignUp }: SignUpScreenProps) {
+  const { signup } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -78,14 +80,18 @@ export default function SignUpScreen({ navigation, onSignUp }: SignUpScreenProps
 
     if (hasError) return;
 
-    // Simulate sign up
+    // Sign up with context
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('Sign up successful', { name, email, password });
-      // In real app, call onSignUp() to update auth state
+    try {
+      await signup({ name, email, password });
+      Alert.alert('Success', 'Account created successfully!');
       if (onSignUp) onSignUp();
-    }, 1500);
+    } catch (error) {
+      Alert.alert('Error', 'Sign up failed. Please try again.');
+      console.error('Sign up error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialSignUp = (provider: string) => {

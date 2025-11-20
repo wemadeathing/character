@@ -1,8 +1,32 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
 
 export default function ProfileScreen() {
+  const { user, logout, isAuthenticated } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              Alert.alert('Success', 'Logged out successfully');
+            } catch (error) {
+              Alert.alert('Error', 'Failed to log out');
+            }
+          },
+        },
+      ]
+    );
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -14,8 +38,8 @@ export default function ProfileScreen() {
             <Ionicons name="camera" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>john.doe@example.com</Text>
+        <Text style={styles.name}>{user?.name || 'Guest User'}</Text>
+        <Text style={styles.email}>{user?.email || 'Not logged in'}</Text>
       </View>
 
       <View style={styles.statsContainer}>
@@ -116,7 +140,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
         <Text style={styles.logoutText}>Log Out</Text>
       </TouchableOpacity>

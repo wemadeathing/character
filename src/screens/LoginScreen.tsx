@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../navigation/AuthStack';
 import { Input, Button, Card } from '../components';
 import Theme from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -14,6 +15,7 @@ interface LoginScreenProps {
 }
 
 export default function LoginScreen({ navigation, onLogin }: LoginScreenProps) {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -51,14 +53,18 @@ export default function LoginScreen({ navigation, onLogin }: LoginScreenProps) {
 
     if (hasError) return;
 
-    // Simulate login
+    // Login with context
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('Login successful', { email, password });
-      // In real app, call onLogin() to update auth state
+    try {
+      await login({ email, password });
+      Alert.alert('Success', 'Logged in successfully!');
       if (onLogin) onLogin();
-    }, 1500);
+    } catch (error) {
+      Alert.alert('Error', 'Login failed. Please try again.');
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
