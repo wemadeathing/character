@@ -21,9 +21,9 @@ export default function BottomTabNavigator() {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E0E0E0',
-          height: 60 + insets.bottom,
-          paddingBottom: insets.bottom + 8,
-          paddingTop: 8,
+          height: 80 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 20,
+          paddingTop: 10,
         },
         headerStyle: {
           backgroundColor: '#4A90E2',
